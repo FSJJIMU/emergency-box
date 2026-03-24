@@ -342,62 +342,12 @@
     <div id="alertBox" class="alert"></div>
     <div class="btn-group">
       <button class="btn btn-primary" onclick="generate()">生成</button>
-      <button class="btn btn-clear" onclick="clearAll()">✕ クリア</button>
+      <button class="btn btn-clear" onclick="resetResults()">🗑 リセット</button>
     </div>
   </div>
 
-  <!-- 通常案件出力 -->
-  <div id="normalOutput" style="display:none;">
-    <div style="margin-top: 28px;">
-      <div class="section-label">生成結果</div>
-    </div>
-    <div class="output-grid">
-      <!-- ファースト -->
-      <div class="output-card">
-        <div class="output-card-header">
-          <div class="output-card-title">
-            <span class="badge badge-first">FIRST</span>
-            案件紹介
-            <span class="badge-dest">→ 各エリアROOM</span>
-          </div>
-          <button class="btn-copy" id="copyFirst" onclick="copyText('firstOutput','copyFirst')">📋 コピー</button>
-        </div>
-        <div id="firstOutput" class="output-text empty">生成後に表示されます</div>
-      </div>
-      <!-- セカンド -->
-      <div class="output-card">
-        <div class="output-card-header">
-          <div class="output-card-title">
-            <span class="badge badge-second">SECOND</span>
-            案件詳細
-            <span class="badge-dest">→ 案件詳細&確認ROOM</span>
-          </div>
-          <button class="btn-copy" id="copySecond" onclick="copyText('secondOutput','copySecond')">📋 コピー</button>
-        </div>
-        <div id="secondOutput" class="output-text empty">生成後に表示されます</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ST連絡メール出力 -->
-  <div id="stOutput" style="display:none;">
-    <div style="margin-top: 28px;">
-      <div class="section-label">生成結果</div>
-    </div>
-    <div class="output-full">
-      <div class="output-card">
-        <div class="output-card-header">
-          <div class="output-card-title">
-            <span class="badge" style="background:rgba(240,160,75,0.2);color:var(--warn);border:1px solid rgba(240,160,75,0.3);">ST連絡</span>
-            STからの連絡
-            <span class="badge-dest">→ 案件詳細&確認ROOM</span>
-          </div>
-          <button class="btn-copy" id="copyST" onclick="copyText('stOutputText','copyST')">📋 コピー</button>
-        </div>
-        <div id="stOutputText" class="output-text empty">生成後に表示されます</div>
-      </div>
-    </div>
-  </div>
+  <!-- 生成結果蓄積エリア -->
+  <div id="resultsArea"></div>
 
 </div>
 
@@ -649,27 +599,49 @@ function buildSTMessage(body) {
 }
 
 // ===== メイン処理 =====
+let resultCount = 0;
+
 function generate() {
   const body = document.getElementById('mailInput').value
     .replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   const alertBox = document.getElementById('alertBox');
 
   alertBox.style.display = 'none';
-  document.getElementById('normalOutput').style.display = 'none';
-  document.getElementById('stOutput').style.display = 'none';
 
   if (!body.trim()) {
     showAlert('メール本文を入力してください。', 'warn');
     return;
   }
 
+  resultCount++;
+  const id = resultCount;
+  const area = document.getElementById('resultsArea');
+
   // ST連絡メール
   if (isSTMail(body)) {
     const msg = buildSTMessage(body);
     if (!msg) { showAlert('案件番号が見つかりませんでした。', 'error'); return; }
-    document.getElementById('stOutputText').textContent = msg;
-    document.getElementById('stOutputText').classList.remove('empty');
-    document.getElementById('stOutput').style.display = 'block';
+
+    const block = document.createElement('div');
+    block.style.marginTop = '24px';
+    block.innerHTML = `
+      <div class="section-label">生成結果 #${id}</div>
+      <div class="output-full">
+        <div class="output-card">
+          <div class="output-card-header">
+            <div class="output-card-title">
+              <span class="badge" style="background:rgba(240,160,75,0.2);color:var(--warn);border:1px solid rgba(240,160,75,0.3);">ST連絡</span>
+              STからの連絡
+              <span class="badge-dest">→ トランジットROOM</span>
+            </div>
+            <button class="btn-copy" id="copyST${id}" onclick="copyTextById('stOut${id}','copyST${id}')">📋 コピー</button>
+          </div>
+          <div id="stOut${id}" class="output-text"></div>
+        </div>
+      </div>`;
+    area.appendChild(block);
+    document.getElementById('stOut' + id).textContent = msg;
+    document.getElementById('mailInput').value = '';
     return;
   }
 
@@ -680,20 +652,44 @@ function generate() {
   const first = buildFirst(parsed);
   const second = buildSecond(body, parsed);
 
-  const firstEl = document.getElementById('firstOutput');
-  const secondEl = document.getElementById('secondOutput');
-
-  firstEl.textContent = first;
-  secondEl.textContent = second;
-  firstEl.classList.remove('empty');
-  secondEl.classList.remove('empty');
+  const block = document.createElement('div');
+  block.style.marginTop = '24px';
+  block.innerHTML = `
+    <div class="section-label">生成結果 #${id}</div>
+    <div class="output-grid">
+      <div class="output-card">
+        <div class="output-card-header">
+          <div class="output-card-title">
+            <span class="badge badge-first">FIRST</span>
+            案件紹介
+            <span class="badge-dest">→ 各エリアROOM</span>
+          </div>
+          <button class="btn-copy" id="copyFirst${id}" onclick="copyTextById('firstOut${id}','copyFirst${id}')">📋 コピー</button>
+        </div>
+        <div id="firstOut${id}" class="output-text"></div>
+      </div>
+      <div class="output-card">
+        <div class="output-card-header">
+          <div class="output-card-title">
+            <span class="badge badge-second">SECOND</span>
+            案件詳細
+            <span class="badge-dest">→ 案件担当者</span>
+          </div>
+          <button class="btn-copy" id="copySecond${id}" onclick="copyTextById('secondOut${id}','copySecond${id}')">📋 コピー</button>
+        </div>
+        <div id="secondOut${id}" class="output-text"></div>
+      </div>
+    </div>`;
+  area.appendChild(block);
+  document.getElementById('firstOut' + id).textContent = first;
+  document.getElementById('secondOut' + id).textContent = second;
 
   // ハチ案件警告
   if (parsed.genre.includes('ハチ') && FSJ_HACHI_PREFS.some(p => parsed.address.includes(p))) {
     showAlert('⚠️ このハチ案件はFSJハチルームへの送信対象です。案件紹介は不要で、案件詳細のみFSJハチルームへ送信してください。', 'warn');
   }
 
-  document.getElementById('normalOutput').style.display = 'block';
+  document.getElementById('mailInput').value = '';
 }
 
 function showAlert(msg, type) {
@@ -703,14 +699,14 @@ function showAlert(msg, type) {
   el.style.display = 'block';
 }
 
-function clearAll() {
-  document.getElementById('mailInput').value = '';
-  document.getElementById('normalOutput').style.display = 'none';
-  document.getElementById('stOutput').style.display = 'none';
+function resetResults() {
+  document.getElementById('resultsArea').innerHTML = '';
   document.getElementById('alertBox').style.display = 'none';
+  document.getElementById('mailInput').value = '';
+  resultCount = 0;
 }
 
-function copyText(elementId, btnId) {
+function copyTextById(elementId, btnId) {
   const text = document.getElementById(elementId).textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById(btnId);
