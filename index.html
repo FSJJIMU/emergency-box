@@ -457,7 +457,7 @@ function parseMailBody(body) {
   if (!caseNo) return null;
   return {
     caseNo,
-    received: extractMulti(body, ['■受取日時：','■受信日時：'], ['\n','\n']),
+    received: extractMulti(body, ['■受取日時：','■受信日時：','■取次日時：'], ['\n','\n','\n']),
     deadline: extractMulti(body, ['■お客様への連絡期限：','【下記日時までに連絡必須】\n'], ['\n','\n']),
     siteName: extract(body, '■問合せ元サイト名：', '\n'),
     genre:    extract(body, '■ジャンル：', '\n'),
@@ -685,8 +685,22 @@ function generate() {
   document.getElementById('secondOut' + id).textContent = second;
 
   // ハチ案件警告
-  if (parsed.genre.includes('ハチ') && FSJ_HACHI_PREFS.some(p => parsed.address.includes(p))) {
-    showAlert('⚠️ このハチ案件はFSJハチルームへの送信対象です。案件紹介は不要で、案件詳細のみFSJハチルームへ送信してください。', 'warn');
+  // ハチ案件の時間帯判定
+  const now = new Date();
+  const jstHour = (now.getUTCHours() + 9) % 24;
+  const jstMin = now.getUTCMinutes();
+  const totalMin = jstHour * 60 + jstMin;
+  const isBusinessTime = totalMin >= 7 * 60 && totalMin <= 22 * 60;
+  const isFsjHachi = parsed.genre.includes('ハチ') &&
+    isBusinessTime &&
+    FSJ_HACHI_PREFS.some(p => new RegExp(p + '[都道府県]').test(parsed.address));
+
+  if (parsed.genre.includes('ハチ') && FSJ_HACHI_PREFS.some(p => new RegExp(p + '[都道府県]').test(parsed.address))) {
+    if (isBusinessTime) {
+      showAlert('⚠️ このハチ案件はFSJハチルームへの送信対象です。案件紹介は不要で、案件詳細のみFSJハチルームへ送信してください。', 'warn');
+    } else {
+      showAlert('⚠️ 時間外（22:01〜6:59）のハチ案件です。各エリアROOMにファーストを、トランジットROOMにセカンドを送信してください。', 'warn');
+    }
   }
 
   document.getElementById('mailInput').value = '';
