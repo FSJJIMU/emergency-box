@@ -8,86 +8,114 @@
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&display=swap');
 
   :root {
-    --bg: #0f1117;
-    --bg2: #161b27;
-    --bg3: #1e2535;
-    --main: #3a5fa0;
-    --main2: #2a4575;
-    --accent: #64d8a0;
-    --warn: #f0a04b;
-    --danger: #e05c5c;
-    --text: #e8edf5;
+    --bg: #07090f;
+    --bg2: rgba(22, 27, 39, 0.65);
+    --bg3: rgba(30, 37, 53, 0.7);
+    --main: #4a7dff;
+    --main-glow: rgba(74, 125, 255, 0.35);
+    --main2: #2d5fd4;
+    --accent: #5ee8a6;
+    --accent-glow: rgba(94, 232, 166, 0.3);
+    --warn: #ffb463;
+    --danger: #ff5c5c;
+    --text: #f0f3f9;
     --text2: #8a9ab5;
-    --border: #2a3348;
-    --radius: 10px;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-2: rgba(255, 255, 255, 0.14);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --ease: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 0%, rgba(74, 125, 255, 0.12), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, rgba(94, 232, 166, 0.06), transparent 70%),
+      radial-gradient(ellipse 70% 40% at 50% 100%, rgba(74, 125, 255, 0.04), transparent 70%),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--text);
     min-height: 100vh;
-    padding: 0 0 40px;
+    padding: 0 0 60px;
     font-size: 14px;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ヘッダー */
   header {
-    background: linear-gradient(135deg, #1a2540 0%, #0f1117 100%);
+    background:
+      linear-gradient(135deg, rgba(74, 125, 255, 0.12) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(20, 28, 48, 0.8) 0%, rgba(10, 12, 20, 0.4) 100%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     border-bottom: 1px solid var(--border);
-    padding: 16px 20px;
+    padding: 20px 24px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    gap: 16px;
   }
 
   .logo {
-    width: 44px;
-    height: 44px;
-    background: #567ab9;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #5a87d0 0%, #3a5fa0 100%);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    padding: 4px;
+    padding: 5px;
+    box-shadow: 0 8px 24px -6px rgba(74, 125, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   .header-text h1 {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 17px;
+    font-weight: 900;
     color: var(--text);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    background: linear-gradient(135deg, #f0f3f9 0%, #c8d2e6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   .header-text h1 .ver {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text2);
-    margin-left: 6px;
-    letter-spacing: 0.05em;
+    -webkit-text-fill-color: var(--text2);
+    margin-left: 8px;
+    letter-spacing: 0.12em;
     vertical-align: middle;
+    text-transform: uppercase;
+    opacity: 0.7;
   }
 
   .header-text p {
     font-size: 11px;
     color: var(--text2);
-    margin-top: 1px;
+    margin-top: 3px;
+    letter-spacing: 0.04em;
   }
 
   .status-badge {
-    background: rgba(100, 216, 160, 0.15);
-    border: 1px solid rgba(100, 216, 160, 0.3);
+    background: rgba(94, 232, 166, 0.12);
+    border: 1px solid rgba(94, 232, 166, 0.3);
     color: var(--accent);
     font-size: 11px;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
+    box-shadow: 0 0 20px -4px var(--accent-glow), inset 0 0 12px -4px rgba(94, 232, 166, 0.2);
+    letter-spacing: 0.03em;
+  }
+  .status-badge.loading { animation: breathe 1.8s ease-in-out infinite; }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
   }
 
   .input-label-row {
@@ -100,16 +128,21 @@
   .input-label-row .section-label { margin-bottom: 0; }
 
   .result-count {
-    margin-top: 8px;
+    margin-top: 10px;
     text-align: right;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text2);
     font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
   .result-count .num {
     color: var(--accent);
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 800;
+    font-size: 15px;
+    margin: 0 2px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 12px var(--accent-glow);
   }
 
   /* ナビ一覧 */
@@ -125,14 +158,17 @@
     display: flex;
     align-items: stretch;
     background: var(--bg2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    transition: all 0.15s;
+    transition: all var(--ease);
   }
   .nav-item:hover {
     border-color: var(--main);
     transform: translateY(-1px);
+    box-shadow: 0 6px 20px -6px var(--main-glow);
   }
 
   .nav-btn {
@@ -161,11 +197,13 @@
   .nav-btn:hover { background: var(--bg3); }
   .nav-case {
     color: var(--accent);
-    font-weight: 700;
-    background: rgba(100, 216, 160, 0.15);
-    padding: 3px 9px;
-    border-radius: 5px;
-    letter-spacing: 0.02em;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgba(94, 232, 166, 0.22) 0%, rgba(94, 232, 166, 0.08) 100%);
+    padding: 4px 11px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    box-shadow: inset 0 0 12px -6px var(--accent-glow);
   }
   .nav-name { font-size: 12px; }
   .nav-pref { color: var(--text2); font-size: 11px; }
@@ -219,9 +257,9 @@
 
   /* メインレイアウト */
   .container {
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 24px 16px 0;
+    padding: 32px 20px 0;
   }
 
   /* 入力セクション */
@@ -229,12 +267,12 @@
     font-size: 11px;
     font-weight: 700;
     color: var(--text2);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
   .section-label::before {
@@ -242,22 +280,25 @@
     display: block;
     width: 3px;
     height: 12px;
-    background: var(--main);
+    background: linear-gradient(180deg, var(--main) 0%, var(--accent) 100%);
     border-radius: 2px;
+    box-shadow: 0 0 8px var(--main-glow);
   }
 
   textarea {
     width: 100%;
     background: var(--bg2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     color: var(--text);
     font-family: 'Noto Sans JP', monospace;
     font-size: 13.5px;
     line-height: 1.7;
-    padding: 14px;
+    padding: 16px;
     resize: vertical;
-    transition: border-color 0.2s;
+    transition: all var(--ease);
     min-height: 180px;
   }
 
@@ -265,6 +306,7 @@
     outline: none;
     border-color: var(--main);
     background: var(--bg3);
+    box-shadow: 0 0 0 4px rgba(74, 125, 255, 0.1), 0 8px 30px -10px var(--main-glow);
   }
 
   textarea::placeholder { color: var(--text2); }
@@ -278,43 +320,72 @@
   .btn-group {
     display: flex;
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 14px;
     flex-wrap: wrap;
   }
 
   .btn {
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     border: none;
-    transition: all 0.15s;
+    transition: all var(--ease);
     display: flex;
     align-items: center;
     gap: 6px;
+    letter-spacing: 0.04em;
   }
 
   .btn-primary {
-    background: var(--main);
+    background: linear-gradient(135deg, #5a8bff 0%, #3562d4 100%);
     color: white;
     flex: 1;
     font-size: 16px;
-    padding: 14px 28px;
+    padding: 15px 28px;
     justify-content: center;
+    box-shadow:
+      0 10px 30px -8px var(--main-glow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
   }
 
-  .btn-primary:hover { background: var(--main2); transform: translateY(-1px); }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px -8px var(--main-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
   .btn-primary:active { transform: translateY(0); }
 
   .btn-clear {
     background: var(--bg3);
     color: var(--text2);
     border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
   }
 
-  .btn-clear:hover { border-color: var(--text2); color: var(--text); }
+  .btn-clear:hover { border-color: var(--border-2); color: var(--text); background: rgba(30, 37, 53, 0.9); }
+
+  .btn-primary:disabled {
+    background: linear-gradient(135deg, rgba(60, 70, 95, 0.6) 0%, rgba(40, 50, 75, 0.6) 100%);
+    color: var(--text2);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-primary:disabled::before { display: none; }
+  .btn-primary:disabled:hover { transform: none; box-shadow: none; }
 
   /* 出力エリア */
   .output-grid {
@@ -330,10 +401,14 @@
 
   .output-card {
     background: var(--bg3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
+    transition: border-color var(--ease);
   }
+  .output-card:hover { border-color: var(--border-2); }
 
   .output-card-header {
     padding: 10px 14px;
@@ -341,6 +416,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
   }
 
   .output-card-title {
@@ -353,21 +429,24 @@
 
   .badge {
     font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
   }
 
   .badge-first {
-    background: rgba(86, 122, 185, 0.25);
-    color: #7ea8e0;
-    border: 1px solid rgba(86, 122, 185, 0.3);
+    background: linear-gradient(135deg, rgba(122, 164, 232, 0.25) 0%, rgba(86, 122, 185, 0.15) 100%);
+    color: #a5c4ef;
+    border: 1px solid rgba(122, 164, 232, 0.35);
+    box-shadow: 0 0 12px -4px rgba(122, 164, 232, 0.3);
   }
 
   .badge-second {
-    background: rgba(100, 216, 160, 0.2);
+    background: linear-gradient(135deg, rgba(94, 232, 166, 0.22) 0%, rgba(94, 232, 166, 0.1) 100%);
     color: var(--accent);
-    border: 1px solid rgba(100, 216, 160, 0.3);
+    border: 1px solid rgba(94, 232, 166, 0.35);
+    box-shadow: 0 0 12px -4px var(--accent-glow);
   }
 
   .badge-dest {
@@ -376,23 +455,35 @@
   }
 
   .btn-copy {
-    background: var(--bg3);
+    background: rgba(30, 37, 53, 0.5);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--border);
     color: var(--text2);
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 11px;
-    font-weight: 500;
-    padding: 4px 10px;
+    font-weight: 600;
+    padding: 5px 12px;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--ease);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    letter-spacing: 0.04em;
   }
 
-  .btn-copy:hover { border-color: var(--main); color: var(--main); }
-  .btn-copy.copied { background: rgba(100,216,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .btn-copy:hover {
+    border-color: var(--main);
+    color: var(--main);
+    background: rgba(74, 125, 255, 0.08);
+    box-shadow: 0 0 20px -8px var(--main-glow);
+  }
+  .btn-copy.copied {
+    background: rgba(94, 232, 166, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 20px -4px var(--accent-glow);
+  }
 
   .output-text {
     padding: 14px;
@@ -503,31 +594,43 @@
     margin-top: 20px;
     padding: 0;
     background: var(--bg2);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     overflow: hidden;
-    transition: box-shadow 0.2s;
-    scroll-margin-top: 110px;
+    transition: all var(--ease);
+    scroll-margin-top: 16px;
+    box-shadow: 0 8px 30px -12px rgba(0, 0, 0, 0.6);
   }
+  .result-block:hover { border-color: var(--border-2); }
   .result-block.selected {
-    box-shadow: 0 0 0 2px var(--accent);
+    border-color: rgba(94, 232, 166, 0.5);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 0 30px -4px var(--accent-glow),
+      0 8px 30px -12px rgba(0, 0, 0, 0.6);
   }
-
-  .btn-primary:disabled {
-    background: var(--bg3);
-    color: var(--text2);
-    cursor: not-allowed;
-    transform: none;
-  }
-  .btn-primary:disabled:hover { background: var(--bg3); transform: none; }
 
   /* アニメ */
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
 
   .output-card { animation: fadeIn 0.25s ease; }
+  .result-block { animation: slideInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+  .nav-item { animation: slideInUp 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* スクロールバー全体 */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 </style>
 </head>
 <body>
@@ -546,7 +649,7 @@
     <div class="section-label">メール本文を貼り付け</div>
     <div id="statusBadge" class="status-badge loading">⏳ 設定読込中...</div>
   </div>
-  <textarea id="mailInput" placeholder="シェアリングテクノロジーからのメール全文をここに貼り付けてください..."></textarea>
+  <textarea id="mailInput" placeholder="メール本文をここに貼り付け..."></textarea>
   <div id="alertBox" class="alert"></div>
   <div class="btn-group">
     <button id="generateBtn" class="btn btn-primary" onclick="generate()" disabled>生成</button>
