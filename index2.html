@@ -269,32 +269,10 @@
 
   textarea::placeholder { color: var(--text2); }
 
-  .textarea-wrap { position: relative; }
-  .btn-paste {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(58, 95, 160, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.92);
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    padding: 12px 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 2;
+  /* iOS Safariのタップ時自動ズーム防止（font-size 16px以上でズームされない） */
+  @media (max-width: 600px) {
+    textarea { font-size: 16px; }
   }
-  .btn-paste:hover {
-    background: rgba(58, 95, 160, 0.75);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-  .btn-paste:active { transform: translate(-50%, -50%) scale(0.96); }
 
   /* ボタン */
   .btn-group {
@@ -568,10 +546,7 @@
     <div class="section-label">メール本文を貼り付け</div>
     <div id="statusBadge" class="status-badge loading">⏳ 設定読込中...</div>
   </div>
-  <div class="textarea-wrap">
-    <textarea id="mailInput" placeholder="シェアリングテクノロジーからのメール全文をここに貼り付けてください..."></textarea>
-    <button type="button" class="btn-paste" onclick="pasteClipboard()">貼り付け</button>
-  </div>
+  <textarea id="mailInput" placeholder="シェアリングテクノロジーからのメール全文をここに貼り付けてください..."></textarea>
   <div id="alertBox" class="alert"></div>
   <div class="btn-group">
     <button id="generateBtn" class="btn btn-primary" onclick="generate()" disabled>生成</button>
@@ -1119,23 +1094,6 @@ function deleteBlock(btn) {
     block.remove();
   }
   updateCount();
-}
-
-async function pasteClipboard() {
-  const ta = document.getElementById('mailInput');
-  ta.focus();
-  try {
-    if (!navigator.clipboard || !navigator.clipboard.readText) {
-      throw new Error('clipboard api unavailable');
-    }
-    const text = await navigator.clipboard.readText();
-    if (text) ta.value = text;
-  } catch (e) {
-    const hint = location.protocol === 'file:'
-      ? '（ローカルファイル実行時は自動ペースト不可。公開版で利用可能）'
-      : '';
-    showAlert(`自動ペースト不可${hint}。テキストエリアで貼り付け操作をしてください。`, 'warn');
-  }
 }
 
 function copyTextById(elementId, btnId) {
