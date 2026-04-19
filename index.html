@@ -151,7 +151,14 @@
     text-align: left;
   }
   .nav-btn:hover { background: var(--bg3); }
-  .nav-case { color: var(--accent); font-weight: 700; }
+  .nav-case {
+    color: var(--accent);
+    font-weight: 700;
+    background: rgba(100, 216, 160, 0.15);
+    padding: 3px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.02em;
+  }
   .nav-name { font-size: 12px; }
   .nav-pref { color: var(--text2); font-size: 11px; }
   .nav-genre {
@@ -421,26 +428,14 @@
   .result-header .btn-delete:hover { background: rgba(224, 92, 92, 0.15); color: var(--danger); }
 
   .room-badge {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 6px;
-    background: rgba(100, 216, 160, 0.15);
-    border: 1px solid rgba(100, 216, 160, 0.35);
     color: var(--accent);
     letter-spacing: 0.02em;
     white-space: nowrap;
   }
-  .room-badge.fsj-hachi {
-    background: rgba(240, 160, 75, 0.15);
-    border-color: rgba(240, 160, 75, 0.4);
-    color: var(--warn);
-  }
-  .room-badge.transit {
-    background: rgba(86, 122, 185, 0.2);
-    border-color: rgba(86, 122, 185, 0.4);
-    color: #7ea8e0;
-  }
+  .room-badge.fsj-hachi { color: var(--warn); }
+  .room-badge.transit { color: #7ea8e0; }
 
   /* エラー・警告 */
   .alert {
@@ -476,7 +471,14 @@
 
   /* ST連絡メール出力 */
   .output-full { padding: 14px; }
-  .output-full .output-card { width: 100%; }
+  .output-full .output-card { width: 100%; position: relative; }
+  .output-full .output-text { padding-right: 80px; }
+  .btn-copy.st-copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+  }
 
   .badge-st {
     background: rgba(240, 160, 75, 0.2);
@@ -882,10 +884,7 @@ function generate() {
       </div>
       <div class="output-full">
         <div class="output-card">
-          <div class="output-card-header">
-            <div class="output-card-title"></div>
-            <button class="btn-copy" id="copyST${id}" onclick="copyTextById('stOut${id}','copyST${id}')">${COPY_ICON} コピー</button>
-          </div>
+          <button class="btn-copy st-copy" id="copyST${id}" onclick="copyTextById('stOut${id}','copyST${id}')">${COPY_ICON} コピー</button>
           <div id="stOut${id}" class="output-text"></div>
         </div>
       </div>`;
@@ -966,7 +965,6 @@ function generate() {
           <div class="output-card-title">
             <span class="badge badge-first">FIRST</span>
             案件紹介
-            <span class="badge-dest">→ ${firstDest}</span>
           </div>
           <button class="btn-copy" id="copyFirst${id}" onclick="copyTextById('firstOut${id}','copyFirst${id}')">${COPY_ICON} コピー</button>
         </div>
@@ -977,7 +975,6 @@ function generate() {
           <div class="output-card-title">
             <span class="badge badge-second">SECOND</span>
             案件詳細
-            <span class="badge-dest">→ ${secondDest}</span>
           </div>
           <button class="btn-copy" id="copySecond${id}" onclick="copyTextById('secondOut${id}','copySecond${id}')">${COPY_ICON} コピー</button>
         </div>
