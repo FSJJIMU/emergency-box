@@ -269,6 +269,11 @@
 
   textarea::placeholder { color: var(--text2); }
 
+  /* iOS Safariのタップ時自動ズーム防止（font-size 16px以上でズームされない） */
+  @media (max-width: 600px) {
+    textarea { font-size: 16px; }
+  }
+
   /* ボタン */
   .btn-group {
     display: flex;
