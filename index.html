@@ -124,7 +124,10 @@
 
   .status-floating {
     display: inline-block;
-    margin-bottom: 10px;
+    font-size: 9px;
+    padding: 2px 8px;
+    margin-bottom: 8px;
+    opacity: 0.7;
   }
 
   .result-count {
@@ -1241,14 +1244,16 @@ async function loadConfig() {
       else if (r[0].includes('終了')) HACHI_END_MIN = mins;
     });
 
-    badge.className = 'status-badge';
-    badge.textContent = '✓ 設定同期済み';
+    // 同期成功したらバッジは消す（クリーンなUIに）
+    if (badge) badge.remove();
     document.getElementById('generateBtn').disabled = false;
   } catch (e) {
     console.error('設定読込失敗:', e);
-    badge.className = 'status-badge error';
-    badge.textContent = '⚠ 設定読込失敗';
-    badge.title = String(e);
+    if (badge) {
+      badge.className = 'status-badge error status-floating';
+      badge.textContent = '⚠ 設定読込失敗';
+      badge.title = String(e);
+    }
   }
 }
 
