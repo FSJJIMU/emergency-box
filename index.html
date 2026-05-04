@@ -1407,7 +1407,8 @@ function buildSecond(body, p) {
     }
   }
 
-  return `■案件番号：${p.caseNo}
+  return `■案件番号：
+${p.caseNo}
 
 ■受取日時：
 ${received}
@@ -1427,9 +1428,12 @@ ${p.name}
 ■住所：
 ${p.address}
 
-■電話番号１：${p.phone}
-■電話番号２：${p.phone2}
-■メールアドレス：${p.email}
+■電話番号１：
+${p.phone}
+■電話番号２：
+${p.phone2}
+■メールアドレス：
+${p.email}
 
 ${consultBlock}
 ＜調査費、キャンセル料、出張費が発生する場合：事前に必ずお客様にご説明・ご了承の上、請求してください＞${situationBlock}${siteNoteBlock}`;
